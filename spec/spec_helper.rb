@@ -115,10 +115,6 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.before :each do
-    # TODO: Change to Ohai.config once Ohai::Config is deprecated fully. Needs
-    # to stay Ohai::Config for now so that top-level attributes will get cleared
-    # out between tests (config_spec should be the only place where top-level
-    # config attributes are set).
-    Ohai::Config.reset
+    Ohai.config.reset
   end
 end
