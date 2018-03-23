@@ -30,6 +30,26 @@ Ohai.plugin(:Memory) do
     # The crucial thing to understand about Solaris Virtual Swap is:
     # - Physical (Disk Backed) swap is reserved against first, then RAM Backed Swap
     #
+    #  +--> +-----------------+ <--------+
+    #  |    |RAM Backed Swap  |   RAM Backed swap
+    #  |    |(variable)       |   fluctuates with the amount
+    #  |    |                 |   of free RAM available in a
+    #  |    |                 |   host, so Total Virtual Swap
+    #  |    |                 |   is expected to vary over time,
+    # Total |                 |   sometimes wildly, based on
+    # Virtual                 |   workload
+    # Swap  |                 | ^
+    #  |    |                 | |
+    #  |    |                 | |Solaris swap allocation
+    #  |    |                 | |begins with Physical
+    #  |    +-----------------+ |Swap and grows into
+    #  |    |Physical         | |RAM Backed Swap
+    #  |    |(Disk Backed)    | |
+    #  |    |Swap             | |
+    #  |    |(constant)       | |
+    #  +--> +-----------------+ +
+    #
+    #
     # It is often necessary to determine the following info:
     # - Total Virtual Swap (memory[:swap][:total])
     # - Used Virtual Swap (memory[:swap][:total] - memory[:swap][:free])
