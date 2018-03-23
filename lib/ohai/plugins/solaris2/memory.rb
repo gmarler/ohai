@@ -70,9 +70,9 @@ Ohai.plugin(:Memory) do
     phys_out = shell_out("swap -l | tail +2").stdout.split(/\n/)
     phys_swap_kB = 0
     phys_out.each do |l|
-      tks = l.split
-      # Convert from 512-byte disk block to kB
-      kB = (tks[3][0..-1].to_i * 512)/1024
+      blocks = l.split[3].to_i
+      # Convert from 512-byte disk blocks to kB
+      kB = (blocks * 512)/1024
       phys_swap_kB += kB
     done
     # These are really virtual - keep these for the moment for backwards compat
