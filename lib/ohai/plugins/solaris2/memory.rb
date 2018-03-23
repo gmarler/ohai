@@ -41,12 +41,12 @@ Ohai.plugin(:Memory) do
     #  |    |                 |   is expected to vary over time,
     # Total |                 |   sometimes wildly, based on
     # Virtual                 |   workload
-    # Swap  |                 | ^
-    #  |    |                 | |
-    #  |    |                 | |Solaris swap allocation
-    #  |    |                 | |begins with Physical
-    #  |    +-----------------+ |Swap and grows into
-    #  |    |Physical         | |RAM Backed Swap
+    # Swap  |                 |
+    #  |    |                 | ^
+    #  |    |                 | | Solaris swap utilization
+    #  |    |                 | | starts with Physical
+    #  |    +-----------------+ | Swap and grows into
+    #  |    |Physical         | | RAM Backed Swap
     #  |    |(Disk Backed)    | |
     #  |    |Swap             | |
     #  |    |(constant)       | |
