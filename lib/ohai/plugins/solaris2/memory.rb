@@ -26,9 +26,12 @@ Ohai.plugin(:Memory) do
     # There needs to be a distinction between Physical (Disk Backed) and 
     # Virtual (RAM + Disk Backed) swap on Solaris.
     # 'swap -s' deals entirely in Virtual Swap, leaving out all details regarding
-    # how much Physical Swap has been reserved against/used
+    # how much Physical Swap has been provided to the system, or whether it has
+    # been reserved against/used.
     # The crucial thing to understand about Solaris Virtual Swap is:
     # - Physical (Disk Backed) swap is reserved against first, then RAM Backed Swap
+    # The following diagram shows the interrelationships between virtual and
+    # physical Solaris swap:
     #
     #  +--> +-----------------+ <--------+
     #  |    |RAM Backed Swap  |   RAM Backed swap
@@ -51,10 +54,11 @@ Ohai.plugin(:Memory) do
     #
     #
     # It is often necessary to determine the following info:
-    # - Total Virtual Swap (memory[:swap][:total])
-    # - Used Virtual Swap (memory[:swap][:total] - memory[:swap][:free])
+    # - Total Virtual Swap  (memory[:swap][:total])
+    # - Used Virtual Swap   (memory[:swap][:total] - memory[:swap][:free])
     # - Total Physical Swap (sum of blocks column in 'swap -l' output)
-    # - Used Physical Swap (Total Physical Swap - Used Virtual Swap)
+    #   - This is usually what most people want to know
+    # - Used Physical Swap  (Total Physical Swap - Used Virtual Swap)
     #   - If Positive, you have Physical (Disk Backed) swap left
     #   - If Negative, All Physical (Disk Backed) Swap has been used/
     #     reserved against, and you're into RAM Backed Swap.
@@ -63,7 +67,11 @@ Ohai.plugin(:Memory) do
     tokens = shell_out("swap -s").stdout.strip.split
     used_swap = tokens[8][0..-1].to_i #strip k from end
     free_swap = tokens[10][0..-1].to_i #strip k from end
+    # These are really virtual - keep these for the moment for backwards compat
     memory[:swap][:total] = "#{used_swap + free_swap}kB"
     memory[:swap][:free] = "#{free_swap}kB"
+    # So name them differently
+    memory[:swap][:virtual][:total] = "#{used_swap + free_swap}kB"
+    memory[:swap][:virtual][:free] = "#{free_swap}kB"
   end
 end
